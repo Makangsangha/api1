@@ -65,6 +65,7 @@
 -->
       
       $(function(){
+    	  var no = "${no}"
     	  $("#mycontent").css({"background-color":"#cce0ff"});
     	  // 웹브라우저의 주소창의 포트까지 가져오기
      	  var url = window.location.host;
@@ -75,7 +76,7 @@
 
     	// 192.168.200.104:22222/chatting
     	// 웹소켓통신을 하기위해서는 http:// 을 사용하는 것이 아니라 ws:// 을 사용해야 한다.
-    	  var wsUrl = "ws://" + root + "/chatting";
+    	  var wsUrl = "ws://" + root + "/chatting?no=" + no;
     	  var websocket = new WebSocket(wsUrl);
 
 		  

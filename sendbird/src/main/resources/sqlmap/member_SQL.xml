@@ -11,4 +11,43 @@
 			mem_id= #{mem_id} and mem_pw= #{mem_pw}
 	</select>
 	
+	<insert id="insertBook" parameterType="bookVO" useGeneratedKeys="true">
+	 <selectKey keyProperty="book_num" resultType="string" order="BEFORE"> 
+	 	select seq_book.nextval from dual
+	 </selectKey>
+		insert into
+			books (book_num, book_name, book_cover, book_isbn, book_date, book_price,
+					 book_author, book_summary, book_publisher)
+			values(#{book_num}, #{book_name}, #{book_cover}, #{book_isbn}, #{book_date}, #{book_price},
+					#{book_author}, #{book_summary}, #{book_publisher})		 
+	</insert>
+	
+	<select id="selectBook" resultType="bookVO" >
+		select
+			book_num, book_name, book_cover, book_isbn, book_date, book_price,
+			book_author, book_summary, book_publisher
+		from books
+	</select>
+	
+	<insert id="setChatRoom" parameterType="chatRoomVO" useGeneratedKeys="true">
+		<selectKey keyProperty="cr_no" resultType="string" order="BEFORE">
+			select seq_chatroom.nextval from dual
+		</selectKey>
+		insert into
+			chat_room (cr_no, cr_date, cr_end_date, cr_pw, 
+						cr_name, cr_content, cr_max_user, cr_cnt_user, cr_online_user)
+		values(#{cr_no}, sysdate, sysdate, #{cr_pw}, #{cr_name}, 
+				#{cr_content}, #{cr_max_user}, 1, 1)
+	</insert>
+	
+	<insert id="setChatUser" parameterType="map">
+		insert into
+			chat_mem (mem_id, cr_no, mem_nick, online_check, cr_master)
+			values(#{mvo.mem_id}, #{cr_no}, #{mvo.mem_name}, 'Y', 'Y')
+	</insert>
+	
+	<select id="getAllChatRoom" resultType="chatRoomVO">
+		select *
+		from chat_room
+	</select>
   </mapper>
