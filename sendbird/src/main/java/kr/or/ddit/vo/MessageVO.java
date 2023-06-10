@@ -6,11 +6,22 @@ public class MessageVO {
 	private String message;
 	private String type;
 	private String to;
+	private String room;
 	
 	
 	public static MessageVO converMessage(String payload) {
 		Gson gson = new Gson();
         return gson.fromJson(payload, MessageVO.class);
+	}
+
+
+	public String getRoom() {
+		return room;
+	}
+
+
+	public void setRoom(String room) {
+		this.room = room;
 	}
 
 

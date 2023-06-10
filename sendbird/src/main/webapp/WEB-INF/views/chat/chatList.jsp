@@ -9,6 +9,9 @@
 <title>Insert title here</title>
 </head>
 <body>
+	<h2>${user.mem_name }님 안녕하세요!</h2>
+	<input type="hidden" id="mem_id" value="${user.mem_id }">
+	<input type="hidden" id="mem_name" value="${user.mem_name }">
 	<button id="insertChatRoom">채팅방 개설하기</button>
 		<form id="insertForm"  action="/setChatRoom"  method="post"  style="display: none">
 			<table border="1">
@@ -58,7 +61,8 @@
 		var chatBtn = $("#chatBtn");
 		var hidBtn = $("#hidBtn");
 		var insertForm = $("#insertForm");
-		var chatBtn = $("#chatBtn");
+		var chatBtn2 = $("#chatBtn2");
+		
 		insertChatRoom.on('click', function(){
 			insertForm.css("display", "block");	
 		})
@@ -68,6 +72,7 @@
 			var cr_name = $("#cr_name").val();
 			var cr_content = $("#cr_content").val();
 			
+			
 			if(cr_name == null || cr_name.trim() == ""){
 				alert("제목을 입력해주세요!");
 				return false;
@@ -76,11 +81,17 @@
 				alert("간단한 소개를 작성해주세요!");
 				return false;
 			}
+	
 			insertForm.css("display", "none");
 			insertForm.submit();
+			
+			$("#cr_name").val("");
+			$("#cr_content").val("");
+			$("#cr_max_user").val("");
+			$("#cr_pw").val("");	
 		})
 		
-		hidBtn.on("click", function(){
+		hidBtn.on("click", function(){	
 			insertForm.css("display", "none");
 		})
 	 
@@ -93,12 +104,12 @@
 				re = "<table border='1'>";
 				$.each(res, function(index, item){
 					re += "<tr><td>방 제목</td><td>"+ item.cr_name + "</td></tr>"
-					re += "<tr><td>방 비밀번호 입력</td><td><input type='text' id='chatPw'/></td></tr>"
+					re += "<tr><td>방 비밀번호 입력</td><td><input type='text' id='"+ item.cr_no+"'/></td></tr>"
 					re += "<tr><td>방 소개</td><td>"+ item.cr_content + "</td></tr>"
 					re += "<tr><td>방 참여 가능인원</td><td>"+ item.cr_max_user + "</td></tr>"
 					re += "<tr><td>방 현재 참여인원</td><td>"+ item.cr_cnt_user + "</td></tr>"
 					re += "<tr><td>지금 접속 중인 인원</td><td>"+ item.cr_online_user + "</td></tr>"
-					re += "<tr><td colspan='2'><input type='button' id='chatBtn' value='방 참여하기' data-no='"+item.cr_no+"' data-pw='"+item.cr_pw+"'></td></tr>";
+					re += "<tr><td colspan='2'><input type='button' id='chatBtn2' value='방 참여하기' data-no='"+item.cr_no+"''></td></tr>";
 				});
 				re +="</table>"
 				
@@ -107,10 +118,59 @@
 		})
 
 		
-		$(document).on('click', '#chatBtn', function(){
+		$(document).on('click', '#chatBtn2', function(){
 			var no = $(this).data("no");
-			location.href = "/goChat?no="+no
+			var pw = $("[id='" + no + "']").val();
+
+			$.ajax({
+				type : "get",
+				url : "/chatCheck",
+				data : {
+					"cr_no" : no,
+					"cr_pw" : pw
+				},
+				contentType : "application/json; charset=utf-8",
+				success : function(res){
+					if(res.message!="OK"){
+						alert(res.message)
+						return false;
+					}else{
+						if(confirm("채팅방에 접속하시겠습니까?")){
+							inputChat(no);
+						}else{
+							return false;
+						}
+					}
+				}
+			})
 		})
+		
+
 	})
+	
+
+	function inputChat(no){
+		var mem_id = $("#mem_id").val();
+		var mem_name = $("#mem_name").val();
+		alert("mem_id : " + mem_id +", mem_name :" + mem_name + ", no : " + no);
+		$.ajax({
+			type : "get",
+			url : "/insertChat",
+			data : {
+				"cr_no" : no,
+				"mem_id" : mem_id,
+				"mem_nick" : mem_name
+			},
+			contentType : "application/json; charset=utf-8",
+			success : function(res){
+				alert(res.message)
+				if(res.message == 'OK'){
+					location.href = "/goChat?no="+no				
+				}else{
+					return false;
+				}
+			}
+		})
+	}
 </script>
 </html>

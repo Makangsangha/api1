@@ -31,7 +31,7 @@
 
    <input type="text"   id="message" class="form-control" placeholder="메시지 내용"/>
    <input type="button" id="btnSendMessage" class="btn btn-success btn-sm my-3" value="메시지보내기" />
-   <input type="button" class="btn btn-danger btn-sm my-3 mx-3" onClick="javascript:location.href='<%=request.getContextPath() %>/index.action'" value="채팅방나가기" />
+   <input type="button" class="btn btn-danger btn-sm my-3 mx-3" onClick="javascript:location.href='/chatList'" value="채팅방나가기" />
 </div>
 </div>
 </div>
@@ -65,6 +65,8 @@
 -->
       
       $(function(){
+    	  var chatRooms = [];
+    	  
     	  var no = "${no}"
     	  $("#mycontent").css({"background-color":"#cce0ff"});
     	  // 웹브라우저의 주소창의 포트까지 가져오기

@@ -37,7 +37,7 @@
 			chat_room (cr_no, cr_date, cr_end_date, cr_pw, 
 						cr_name, cr_content, cr_max_user, cr_cnt_user, cr_online_user)
 		values(#{cr_no}, sysdate, sysdate, #{cr_pw}, #{cr_name}, 
-				#{cr_content}, #{cr_max_user}, 1, 1)
+				#{cr_content}, #{cr_max_user}, 1, 0)
 	</insert>
 	
 	<insert id="setChatUser" parameterType="map">
@@ -50,4 +50,76 @@
 		select *
 		from chat_room
 	</select>
+	
+	<select id="allCheck" parameterType="chatRoomVO" resultType="chatRoomVO">
+		select * from chat_room 
+		where cr_no = #{cr_no}
+		and cr_pw = #{cr_pw}
+	</select>
+	
+	<select id="chatMemCheck" parameterType="chatMemVO" resultType="chatMemVO">
+		select * from chat_mem
+		where cr_no = #{cr_no}
+		and mem_id = #{mem_id}
+	</select> 
+	
+	<insert id="insertChatMem" parameterType="chatMemVO">
+		insert 
+		into chat_mem (mem_id, cr_no, mem_nick, online_check, cr_master)
+		values (#{mem_id}, #{cr_no}, #{mem_nick}, 'Y', 'N')
+	</insert>
+	
+	<update id="updateCntUser" parameterType="string">
+		update chat_room
+		set
+			cr_cnt_user = cr_cnt_user + 1,
+			cr_online_user = cr_online_user + 1
+		where cr_no = #{cr_no}  
+	</update>
+	
+	<update id="updateOnline" parameterType="chatMemVO">
+		update chat_mem
+		set 
+			online_check = 'Y'
+		where cr_no = #{cr_no}
+		and mem_id = #{mem_id}	
+	</update>
+	
+	<update id="updateOnlineUser" parameterType="string">
+		update chat_room
+		set
+			cr_online_user = cr_online_user + 1
+		where cr_no = #{cr_no}
+	</update>
+	
+	<select id="getRoomInfo" parameterType="string" resultType="chatRoomVO">
+		select * from chat_room
+		where cr_no = #{cr_no}
+	</select>
+	
+	<select id="selectAllMem" parameterType="chatMemVO" resultType="chatMemVO">
+		select * from chat_mem
+		where mem_id != #{mem_id}
+		and cr_no = #{cr_no}
+	</select>
+	
+	<select id="selectAllMem2" parameterType="chatMemVO" resultType="chatMemVO">
+		select * from chat_mem
+		where cr_no = #{cr_no}
+	</select>	
+	
+	<update id="closdeChatRoom" parameterType="string">
+		update chat_room
+		set
+			cr_online_user = cr_online_user - 1
+		where cr_no = #{cr_no}
+	</update>
+	
+	<update id="closdeChatMem" parameterType="chatMemVO">
+		update chat_mem
+		set 
+			online_check = 'N'
+		where cr_no = #{cr_no}
+		and mem_id = #{mem_id}
+	</update>
   </mapper>
