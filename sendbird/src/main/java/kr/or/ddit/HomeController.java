@@ -134,7 +134,12 @@ public class HomeController {
 		HttpSession session = req.getSession();
 		session.setAttribute("no", no);
 		
-		return "chat/newChat2";
+		return "redirect:/newChat";
+	}
+	
+	@RequestMapping(value = "/newChat", method = RequestMethod.GET)
+	public String newChat2() {
+		return "chat/newChat";
 	}
 	
 	@RequestMapping(value = "/setChatRoom", method = RequestMethod.POST)

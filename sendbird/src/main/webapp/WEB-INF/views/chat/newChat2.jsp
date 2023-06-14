@@ -64,7 +64,7 @@
 */
 -->
       
-      var chatRooms = {};
+    var chatRooms = {};
     var websocket;
       $(function() {
 
@@ -108,7 +108,7 @@
     	      messageObj = {
     	        message: messageVal,
     	        type: "all",
-    	        to: "all"
+    	        to: "all",
     	      };
 
     	      var to = $("input#to").val();
@@ -186,6 +186,7 @@
 	  	    var appCtx = pathname.substring(0, pathname.lastIndexOf("/"));
 	  	    var root = url + appCtx;
 	  	    var wsUrl = "ws://" + root + "/chatting";
+	  	    
 	  	    websocket = new WebSocket(wsUrl);
 
 	  	    websocket.onopen = function() {
@@ -195,8 +196,7 @@
 	  	      var messageObj = {
 	  	        message: "<span style='color: red;'>${user.mem_name}</span>님이 채팅방에 입장했습니다",
 	  	        type: "all",
-	  	        to: "all",
-	  	       	room : roomNo
+	  	        to: "all"
 	  	      };
 
 	  	      websocket.send(JSON.stringify(messageObj));
