@@ -70,30 +70,8 @@ public class MemberServiceImpl implements MemberService {
 			ChatRoomVO rvo = mapper.getRoomInfo(vo.getCr_no());
 			if (Integer.parseInt(rvo.getCr_max_user()) <= Integer.parseInt(rvo.getCr_cnt_user())) {
 				message.put("message", "채팅방의 인원이 가득 찼습니다!");
-			} else {
-				int b = mapper.insertChatMem(vo);
-				int c = mapper.updateCntUser(vo.getCr_no());
-				if (b < 1 || c < 1) {
-					message.put("message", "서버 에러 발생!");
-				}else {
-					int a = mapper.updateOnline(vo);
-					if (a < 1) {
-						message.put("message", "서버 에러 발생!");
-					}
-				}
-			}
-		} else {
-			int d = mapper.updateOnlineUser(vo.getCr_no());
-			if (d < 1) {
-				message.put("message", "서버 에러 발생!");
-			}else {
-				int a = mapper.updateOnline(vo);
-				if (a < 1) {
-					message.put("message", "서버 에러 발생!");
-				}
 			}
 		}
-
 		return message;
 	}
 
@@ -121,9 +99,35 @@ public class MemberServiceImpl implements MemberService {
 		vo.setMem_id(mem_id);
 		vo.setCr_no(roomNo);
 		mapper.closdeChatMem(vo);
-		
+
 	}
 
-
+	@Override
+	public void insertChatInfo(ChatMemVO vo) {
+		ChatMemVO mvo = mapper.chatMemCheck(vo);
+		Map<String, Object> message = new HashMap<>();
+		if (mvo == null) {
+			int b = mapper.insertChatMem(vo);
+			int c = mapper.updateCntUser(vo.getCr_no());
+			if (b < 1 || c < 1) {
+				message.put("message", "서버 에러 발생!");
+			} else {
+				int a = mapper.updateOnline(vo);
+				if (a < 1) {
+					message.put("message", "서버 에러 발생!");
+				}
+			}
+		} else {
+			int d = mapper.updateOnlineUser(vo.getCr_no());
+			if (d < 1) {
+				message.put("message", "서버 에러 발생!");
+			} else {
+				int a = mapper.updateOnline(vo);
+				if (a < 1) {
+					message.put("message", "서버 에러 발생!");
+				}
+			}
+		}
+	}
 
 }

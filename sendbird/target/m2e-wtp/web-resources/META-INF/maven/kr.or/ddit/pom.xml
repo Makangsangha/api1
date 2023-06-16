@@ -146,13 +146,23 @@
 		</dependency>
 		
 		<!-- GSON 말고 아래 JSON라이브러리 사용해도 상관x-->
+<!-- 		<dependency> -->
+<!-- 		        <groupId>com.fasterxml.jackson.core</groupId> -->
+<!-- 		        <artifactId>jackson-databind</artifactId> -->
+<!-- 		        <version>2.9.6</version> -->
+<!-- 		</dependency> -->
+		
+		<!-- qr코드 -->
 		<dependency>
-		        <groupId>com.fasterxml.jackson.core</groupId>
-		        <artifactId>jackson-databind</artifactId>
-		        <version>2.9.6</version>
+    		<groupId>com.google.zxing</groupId>
+    		<artifactId>core</artifactId>
+    		<version>3.5.0</version>
 		</dependency>
-		
-		
+		<dependency>
+    		<groupId>com.google.zxing</groupId>
+    		<artifactId>javase</artifactId>
+    		<version>3.5.0</version>
+		</dependency>
 		
 		<!-- db -->
 		<dependency>

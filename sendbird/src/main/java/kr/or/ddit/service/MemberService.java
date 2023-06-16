@@ -34,4 +34,6 @@ public interface MemberService {
 
 	public void closdeChatMem(String mem_id, String roomNo);
 
+	public void insertChatInfo(ChatMemVO mvo);
+
 }

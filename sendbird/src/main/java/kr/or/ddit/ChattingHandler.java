@@ -14,6 +14,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import kr.or.ddit.service.MemberService;
+import kr.or.ddit.vo.ChatMemVO;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.MessageVO;
 
@@ -32,7 +33,13 @@ public class ChattingHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionEstablished(WebSocketSession wsession) throws Exception {
 		Map<String, Object> a = wsession.getAttributes();
-		String roomNo = a.get("no").toString();
+		String roomNo = a.get("no").toString();		
+		MemberVO user1 = (MemberVO) a.get("user");
+		ChatMemVO mvo = new ChatMemVO();
+		mvo.setCr_no(roomNo);
+		mvo.setMem_id(user1.getMem_id());
+		mvo.setMem_nick(user1.getMem_name());		
+		service.insertChatInfo(mvo);
 		
 		if (!chatRooms.containsKey(roomNo)) {
 		    chatRooms.put(roomNo, new ArrayList<>());
@@ -80,29 +87,29 @@ public class ChattingHandler extends TextWebSocketHandler {
 		for (WebSocketSession webSocketSession : chatRooms.get(roomNo)){
 			if ("all".equals(messagevo.getType())) {
 				if (!wsession.getId().equals(webSocketSession.getId())) {
-					webSocketSession.sendMessage(new TextMessage("<span>" + loginuser.getMem_no()
-							+ "</span>&nbsp;[<span style='font-weight:bold; cursor:pointer;' class='loginuserName'>"
+					webSocketSession.sendMessage(new TextMessage("<span style= 'color:white;'>" + loginuser.getMem_no()
+							+ "</span>&nbsp;<span style='font-weight:bold; color:white; cursor:pointer;' class='loginuserName'>["
 							+ loginuser.getMem_name()
-							+ "</span>]<br><div style='background-color: white; display: inline-block; max-width: 60%; padding: 7px; border-radius: 15%; word-break: break-all;'>"
+							+ "]</span><br><div style='background-color: #642EFE; display: inline-block; max-width: 60%; padding: 7px; border-radius: 15%; word-break: break-all; color:white'>"
 							+ messagevo.getMessage()
 							+ "</div> <div style='display: inline-block; padding: 20px 0 0 5px; font-size: 7pt;'>"
 							+ currentTime + "</div> <div>&nbsp;</div>"));
 				}
-			} else {
-				Map<String, Object> map1 = webSocketSession.getAttributes();
-				MemberVO user = (MemberVO) map1.get("user");
-				String to = user.getMem_no();
+				} else {
+					Map<String, Object> map1 = webSocketSession.getAttributes();
+					MemberVO user = (MemberVO) map1.get("user");
+					String to = user.getMem_no();
 
-				if (messagevo.getTo().equals(to)) {
-					webSocketSession.sendMessage(new TextMessage("<span> 귓속말" + loginuser.getMem_no()
-							+ "</span>&nbsp;[<span style='font-weight:bold; cursor:pointer;' class='loginuserName'>"
+					if (messagevo.getTo().equals(to)) {
+						webSocketSession.sendMessage(new TextMessage("<span style= 'color:white;'> 귓속말" + loginuser.getMem_no()
+							+ "</span>&nbsp;<span style='font-weight:bold; color:white; cursor:pointer;' class='loginuserName'>["
 							+ loginuser.getMem_name()
-							+ "</span>]<br><div style='background-color: white; display: inline-block; max-width: 60%; padding: 7px; border-radius: 15%; word-break: break-all; color: red;'>"
+							+ "]</span><br><div style='background-color: #642EFE; display: inline-block; max-width: 60%; padding: 7px; border-radius: 15%; word-break: break-all; color: red;'>"
 							+ messagevo.getMessage()
 							+ "</div> <div style='display: inline-block; padding: 20px 0 0 5px; font-size: 7pt;'>"
 							+ currentTime + "</div> <div>&nbsp;</div>"));
-					break; 
-				}
+						break; 
+					}
 
 			}
 		}
@@ -130,9 +137,9 @@ public class ChattingHandler extends TextWebSocketHandler {
 
 				if (!wsession.getId().equals(webSocketSession.getId())) {
 					webSocketSession
-							.sendMessage(new TextMessage(wsession.getRemoteAddress().getAddress().getHostAddress()
-									+ " [<span style='font-weight:bold;'>" + loginuser.getMem_name() + "</span>]"
-									+ "님이 <span style='color: red;'>퇴장</span>했습니다."));
+							.sendMessage(new TextMessage("<span style='font-weight:bold; color: red;'>["+wsession.getRemoteAddress().getAddress().getHostAddress()
+									+ loginuser.getMem_name()
+									+ "님이 퇴장했습니다.]</span>"));
 				}
 
 			}
